@@ -110,3 +110,21 @@ SELECT vards,
     AVG(CAST(vecums AS FLOAT)) OVER(PARTITION BY darbavieta) AS videjais_vecums_uznemuma
 FROM darbinieks
     LEFT JOIN uznemums u on darbinieks.darbavieta = u.ID
+
+IF EXISTS (
+    SELECT *
+    FROM sys.foreign_keys
+    WHERE name = 'FK_uznemums_direktors'
+)
+ALTER TABLE uznemums DROP CONSTRAINT FK_uznemums_direktors;
+
+IF EXISTS (
+    SELECT *
+    FROM sys.foreign_keys
+    WHERE name = 'FK_darbinieks_darbavieta'
+)
+ALTER TABLE darbinieks DROP CONSTRAINT FK_darbinieks_darbavieta;
+
+IF OBJECT_ID('dbo.darbinieks', 'U') IS NOT NULL DROP TABLE darbinieks;
+
+IF OBJECT_ID('dbo.uznemums', 'U') IS NOT NULL DROP TABLE uznemums;
